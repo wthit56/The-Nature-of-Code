@@ -11,5 +11,5 @@ In the REAMDEs I will embed the video lessons dealt with in the relevant section
 - [Introduction](0 - Introduction)
 - [Vectors](1 - Vectors)
 - [Forces](2 - Forces)
-- [Oscillating Motion](3 - Oscillating Motion)]
+- [Oscillating Motion](3 - Oscillating Motion)
 - [Box2D](5 - Box2D) _(unfinished)_
