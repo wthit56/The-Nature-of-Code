@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<title>0: Introduction - Random Walker: I.4</title>
+		<link href="../styles.css" rel="stylesheet" type="text/css" />
+	</head>
+	<body>
+		<canvas id="canvas"></canvas>
+        <script src="../lib.js" type="text/javascript"></script>
+		<script type="text/javascript">
+  	var canvas = document.getElementById("canvas");
+  	var context = canvas.getContext("2d");
+
+  	canvas.width = 800; canvas.height = 600;
+
+  	var r, slices = 100;
+  	var selected = new Array(slices);
+  	var max = 0;
+  	for (var i = 0; i < 1000000; i++) {
+  		var r1, r2, y;
+  		while (true) {
+  			r1 = Math.random();
+  			r2 = Math.random();
+  			y = r1 * r1;
+
+  			if (r2 < y) { break; }
+  		}
+
+  		r = (r1 * slices) | 0;
+  		r = selected[r] = (selected[r] | 0) + 1;
+  		if (r > max) { max = r; }
+  	}
+
+  	var padding = 1;
+  	var barWidth = (canvas.width - (slices * padding) - padding) / slices;
+  	var barMaxHeight = canvas.height - (padding * 2) / max;
+  	for (var i = 0; i < slices; i++) {
+  		var height = ((selected[i] / max) * barMaxHeight) + padding;
+  		context.fillRect(
+  	        padding + (i * (barWidth + padding)), canvas.height - height,
+  	        barWidth, height
+  	    );
+  	}
+		</script>
+	</body>
+</html>

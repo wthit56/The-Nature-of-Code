@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<title>0: Introduction - Random Walker: I.2</title>
+		<link href="../styles.css" rel="stylesheet" type="text/css" />
+	</head>
+	<body>
+		<canvas id="canvas"></canvas>
+        <script src="../lib.js" type="text/javascript"></script>
+		<script type="text/javascript">
+  	var canvas = document.getElementById("canvas");
+  	var context = canvas.getContext("2d");
+
+  	var Walker = (function () {
+  		function Walker() {
+  			this.x = canvas.width / 2;
+  			this.y = canvas.height / 2;
+  		}
+  		Walker.prototype = {
+  			x: 0, y: 0,
+
+  			step: function () {
+  				var choice = (Math.random() * 4) | 0;
+
+  				if (choice === 0) {
+  					this.x++;
+  				}
+  				else if (choice === 1) {
+  					this.x--;
+  				}
+  				else if (choice === 2) {
+  					this.y++;
+  				}
+  				else {
+  					this.y--;
+  				}
+
+  				this.x = Math.contrain(this.x, 0, canvas.width);
+  				this.y = Math.contrain(this.y, 0, canvas.height);
+  			},
+  			render: function () {
+  				context.fillRect(this.x, this.y, 1, 1);
+  			}
+  		};
+
+  		return Walker;
+  	})();
+
+  	// setup
+  	canvas.width = 800; canvas.height = 600;
+
+  	var w = new Walker();
+
+  	setTimeout(function draw() {
+  		w.step();
+  		w.render();
+
+  		setTimeout(draw);
+  	}, 1000 / 60);
+		</script>
+	</body>
+</html>

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<title>0: Introduction - Random Walker: I.4</title>
+		<link href="../styles.css" rel="stylesheet" type="text/css" />
+	</head>
+	<body>
+		<canvas id="canvas"></canvas>
+        <script src="../lib.js" type="text/javascript"></script>
+		<script type="text/javascript">
+  	var canvas = document.getElementById("canvas");
+  	var context = canvas.getContext("2d");
+
+  	canvas.width = 800; canvas.height = 600;
+  	context.fillStyle = "white";
+
+  	var t = 0;
+  	var fps = 60, frameLength = 1000 / fps;
+  	setTimeout(function draw() {
+  		context.save();
+  		context.fillStyle = "black";
+  		context.fillRect(0, 0, canvas.width, canvas.height);
+  		context.restore();
+
+  		//var x = Math.random.perlin(t) * canvas.width;
+  		var x = (Math.random.perlin(t) / 2) + 0.5;
+  		x = x * canvas.width;
+
+  		context.beginPath();
+  		context.arc(
+  	        x, canvas.height / 2, 40,
+  	        0, Math.PI * 2
+  	    );
+  		context.fill();
+
+  		t += 0.02;
+
+  		setTimeout(draw, frameLength);
+  	}, frameLength);
+		</script>
+	</body>
+</html>
