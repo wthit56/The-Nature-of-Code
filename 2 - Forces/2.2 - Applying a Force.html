@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<title>2: Forces: 2.2 - Applying a Force</title>
+		<link href="../styles.css" rel="stylesheet" type="text/css" />
+	</head>
+	<body>
+		<canvas id="canvas"></canvas>
+		<script src="../lib.js" type="text/javascript"></script>
+		<script type="text/javascript">
+  	var canvas = document.getElementById("canvas");
+  	var context = canvas.getContext("2d");
+
+  	canvas.width = 800;
+  	canvas.height = 600;
+
+  	var mouse = {
+  		position: new Vector(0, 0),
+  		down: false
+  	};
+  	on(window, "mousemove", function (e) {
+  		mouse.position.x = e.pageX;
+  		mouse.position.y = e.pageY;
+  	});
+  	on(window, "mousedown", function (e) {
+  		mouse.down = true;
+  	});
+  	on(window, "mouseup", function (e) {
+  		mouse.down = false;
+  	});
+
+  	var Mover = (function () {
+  		function Mover() {
+  			this.position = new Vector(canvas.width / 2, canvas.height / 2);
+  			this.velocity = new Vector(0, 0);
+  			this.acceleration = new Vector(0, 0);
+  		}
+  		Mover.prototype = {
+  			position: null,
+  			velocity: null,
+  			acceleration: null,
+
+  			applyForce: function (force) {
+  				this.acceleration.add(force);
+
+  				return this;
+  			},
+
+  			move: function () {
+  				// motion
+  				this.velocity.add(this.acceleration);
+  				this.position.add(this.velocity);
+
+  				// bounce
+  				while ((this.position.x < 0) || (this.position.x > canvas.width)) {
+  					if (this.position.x < 0) { this.position.x *= -1; }
+  					else { this.position.x = canvas.width - (this.position.x - canvas.width); }
+
+  					this.velocity.x *= -1;
+  				}
+  				while ((this.position.y < 0) || (this.position.y > canvas.height)) {
+  					if (this.position.y < 0) { this.position.y *= -1; }
+  					else { this.position.y = canvas.height - (this.position.y - canvas.height); }
+
+  					this.velocity.y *= -1;
+  				}
+
+				// reset acceleration
+  				this.acceleration.mul(0);
+  			},
+  			render: function () {
+  				context.beginPath();
+  				context.arc(
+  	                this.position.x, this.position.y, 24,
+  	                0, Math.PI * 2
+  	            );
+  				context.fill();
+  				context.stroke();
+  			}
+  		};
+
+  		return Mover;
+  	})();
+
+
+  	context.fillStyle = "rgb(127,127,127)";
+  	context.strokeStyle = "black";
+  	context.lineWidth = 2;
+
+  	var m = new Mover();
+  	var gravity = new Vector(0, 0.3),
+  	    wind = new Vector(0.2, 0);
+
+  	requestAnimationFrame(function raf() {
+  		context.save();
+  		context.fillStyle = "white";
+  		context.fillRect(0, 0, canvas.width, canvas.height);
+  		context.restore();
+
+  		m.applyForce(gravity);
+  		if (mouse.down) { m.applyForce(wind); }
+  		m.move();
+  		m.render();
+
+  		requestAnimationFrame(raf);
+  	});
+		</script>
+	</body>
+</html>
