@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<title>1: Vectors: 1.2</title>
+		<link href="../styles.css" rel="stylesheet" type="text/css" />
+	</head>
+	<body>
+		<canvas id="canvas"></canvas>
+        <script src="../lib.js" type="text/javascript"></script>
+		<script type="text/javascript">
+  	var canvas = document.getElementById("canvas");
+  	var context = canvas.getContext("2d");
+
+  	canvas.width = 600; canvas.height = 400;
+
+  	context.fillStyle = "rgb(127,127,127)";
+  	context.strokeStyle = "black";
+  	context.lineWidth = 2;
+
+  	var x = canvas.width / 2;
+	var y = canvas.height / 2;
+  	var xspeed = 2.5, yspeed = -2;
+
+  	requestAnimationFrame(function raf() {
+  		x += xspeed;
+  		y += yspeed;
+
+  		if ((x < 0) || (x > canvas.width)) { xspeed = xspeed * -1; }
+  		if ((y < 0) || (y > canvas.height)) { yspeed = yspeed * -1; }
+
+  		context.save();
+  		context.fillStyle = "white";
+  		context.fillRect(0, 0, canvas.width, canvas.height);
+  		context.restore();
+
+  		context.beginPath();
+  		context.arc(
+  	        x, y, 24,
+  	        0, Math.PI * 2
+  	    );
+  		context.fill();
+  		context.stroke();
+
+  		requestAnimationFrame(raf);
+  	});
+		</script>
+	</body>
+</html>

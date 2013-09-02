@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<title>1: Vectors: 1.5</title>
+		<link href="../styles.css" rel="stylesheet" type="text/css" />
+	</head>
+	<body>
+		<canvas id="canvas"></canvas>
+		<script src="../lib.js" type="text/javascript"></script>
+		<script type="text/javascript">
+  	var canvas = document.getElementById("canvas");
+  	var context = canvas.getContext("2d");
+
+  	canvas.width = 800;
+  	canvas.height = 600;
+
+  	var mousePosition = new Vector(0, 0);
+  	on(window, "mousemove", function (e) {
+  		mousePosition.x = e.pageX;
+  		mousePosition.y = e.pageY;
+  	});
+
+  	var Mover = (function () {
+  		function Mover() {
+  			this.position = new Vector(canvas.width / 2, canvas.height / 2);
+  			this.velocity = new Vector(0, 0);
+  			this.acceleration = new Vector(0, 0);
+  		}
+  		Mover.prototype = {
+  			position: null,
+  			velocity: null,
+  			acceleration: null,
+
+  			move: function () {
+  				this.acceleration.copy(mousePosition).sub(this.position).setMag(0.3);
+  				console.log(mousePosition.x + ", " + mousePosition.y + " -> " + this.acceleration.x + ", " + this.acceleration.y);
+
+  				this.velocity.add(this.acceleration).limit(5);
+  				this.position.add(this.velocity);
+
+  				//if ((this.position.x < 0) || (this.position.x > canvas.width)) {
+  				//	this.position.x = ((this.position.x % canvas.width) + canvas.width) % canvas.width;
+  				//}
+  				//if ((this.position.y < 0) || (this.position.y > canvas.height)) {
+  				//	this.position.y = ((this.position.y % canvas.height) + canvas.height) % canvas.height;
+  				//}
+  			},
+  			render: function () {
+  				context.beginPath();
+  				context.arc(
+  	                this.position.x, this.position.y, 24,
+  	                0, Math.PI * 2
+  	            );
+  				context.fill();
+  				context.stroke();
+  			}
+  		};
+
+  		return Mover;
+  	})();
+
+
+  	context.fillStyle = "rgb(127,127,127)";
+  	context.strokeStyle = "black";
+  	context.lineWidth = 2;
+
+  	var m = new Mover();
+
+  	requestAnimationFrame(function raf() {
+  		context.save();
+  		context.fillStyle = "white";
+  		context.fillRect(0, 0, canvas.width, canvas.height);
+  		context.restore();
+
+  		m.move();
+  		m.render();
+
+  		requestAnimationFrame(raf);
+  	});
+		</script>
+	</body>
+</html>
