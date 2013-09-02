@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<title>3: Oscillating Motion: 3.1 - Angles and Angular Motion</title>
+		<link href="../styles.css" rel="stylesheet" type="text/css" />
+	</head>
+	<body>
+		<canvas id="canvas"></canvas>
+		<script src="../lib.js" type="text/javascript"></script>
+		<script type="text/javascript">
+  	var canvas = document.getElementById("canvas");
+  	var context = canvas.getContext("2d");
+
+  	canvas.width = 640;
+  	canvas.height = 360;
+
+  	context.fillStyle = "rgb(127,127,127)";
+
+  	var a = 0, aVel = 0, aAcc = 0.001;
+
+  	requestAnimationFrame(function raf() {
+  		context.save();
+  		context.fillStyle = "white";
+  		context.fillRect(0, 0, canvas.width, canvas.height);
+  		context.restore();
+
+  		aVel += aAcc;
+  		a += aVel;
+
+
+  		context.save();
+
+  		context.translate(canvas.width / 2, canvas.height / 2);
+  		context.rotate(a);
+
+  		context.beginPath();
+  		context.rect(-32, -18, 64, 36);
+  		context.fill();
+  		context.stroke();
+
+  		context.restore();
+
+  		requestAnimationFrame(raf);
+  	});
+		</script>
+	</body>
+</html>

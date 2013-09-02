@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<title>3: Oscillating Motion: 3.4 - Pendulum Simulation</title>
+		<link href="../styles.css" rel="stylesheet" type="text/css" />
+	</head>
+	<body>
+		<canvas id="canvas"></canvas>
+		<script src="../lib.js" type="text/javascript"></script>
+		<script type="text/javascript">
+  	var canvas = document.getElementById("canvas");
+  	var context = canvas.getContext("2d");
+
+  	canvas.width = 640;
+  	canvas.height = 360;
+
+  	context.fillStyle = "white";
+
+  	var G = 0.01;
+  	var angle = Math.PI / 4, aVel = 0, aAcc = 0;
+  	var origin = new Vector(canvas.width / 2, 0);
+  	var bob = new Vector(canvas.width / 2, length);
+  	var length = 180;
+
+  	var start = +new Date(), delta;
+  	requestAnimationFrame(function raf() {
+  		delta = +new Date() - start;
+
+  		context.fillRect(0, 0, canvas.width, canvas.height);
+
+  		aAcc = -G * Math.sin(angle);
+  		aVel += aAcc;
+  		angle += aVel;
+  		
+		aVel *= 0.99;
+
+  		bob.x = origin.x + (Math.sin(angle) * length);
+  		bob.y = origin.y + (Math.cos(angle) * length);
+
+  		context.beginPath();
+  		context.moveTo(origin.x, origin.y);
+  		context.lineTo(bob.x, bob.y);
+  		context.stroke();
+
+  		context.beginPath();
+  		context.arc(
+  	        bob.x, bob.y, 16,
+  	        0, Math.PI * 2
+  	    );
+  		context.fill();
+  		context.stroke();
+
+  		requestAnimationFrame(raf);
+  	});
+		</script>
+	</body>
+</html>

@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<title>3: Oscillating Motion: 3.2 - Trigonometry and Polar Coordinates</title>
+		<link href="../styles.css" rel="stylesheet" type="text/css" />
+	</head>
+	<body>
+		<canvas id="canvas"></canvas>
+		<script src="../lib.js" type="text/javascript"></script>
+		<script type="text/javascript">
+  	var canvas = document.getElementById("canvas");
+  	var context = canvas.getContext("2d");
+
+  	canvas.width = 640;
+  	canvas.height = 360;
+
+  	context.fillStyle = "white";
+  	context.strokeStyle = "white";
+
+  	var r = 0, a = Math.PI / 4;
+  	var a = 0, aVel = 0, aAcc = 0.01;
+
+  	requestAnimationFrame(function raf() {
+  		context.save();
+  		context.fillStyle = "black";
+  		context.fillRect(0, 0, canvas.width, canvas.height);
+  		context.restore();
+
+  		aVel = Math.contrain(aVel + aAcc, 0, 0.1);
+  		a += aVel;
+
+  		r = Math.sin(a/2)*150;
+
+  		var x = Math.cos(a) * r, y = Math.sin(a) * r;
+
+  		context.save();
+
+  		context.translate(canvas.width / 2, canvas.height / 2);
+
+  		context.beginPath();
+  		context.moveTo(0, 0);
+  		context.lineTo(x, y);
+  		context.stroke();
+
+  		context.beginPath();
+  		context.arc(
+  	        x, y, 25,
+  	        0, Math.PI * 2
+  	    );
+  		context.fill();
+
+  		context.restore();
+
+  		requestAnimationFrame(raf);
+  	});
+		</script>
+	</body>
+</html>
