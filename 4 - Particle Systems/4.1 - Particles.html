@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<title>4: Particle Systems: 4.1 - Particles</title>
+		<link href="../styles.css" rel="stylesheet" type="text/css" />
+	</head>
+	<body>
+		<canvas id="canvas"></canvas>
+		<script src="../lib.js" type="text/javascript"></script>
+		<script type="text/javascript">
+  	var canvas = document.getElementById("canvas");
+  	var context = canvas.getContext("2d");
+
+  	var Particle = (function () {
+  		function Particle(x, y) {
+  			this.mass = 1;
+  			this.position = new Vector(x, y);
+  			this.velocity = Vector.random["2D"]();
+  			this.acceleration = new Vector(0, 0);
+  		}
+  		Particle.prototype = {
+  			mass: 1,
+  			position: null,
+  			velocity: null,
+  			acceleration: null,
+
+  			life: 1,
+
+  			applyForce: (function () {
+  				var massForce = new Vector();
+
+  				return function (force) {
+  					massForce.copy(force).div(this.mass);
+  					this.acceleration.add(massForce);
+
+  					return this;
+  				};
+  			})(),
+
+  			update: function () {
+  				// motion
+  				this.velocity.add(this.acceleration);
+  				this.position.add(this.velocity);
+
+  				// reset acceleration
+  				this.acceleration.mul(0);
+
+  				this.life -= 0.01;
+  				//console.log(this.life);
+  				if (this.life <= 0) {
+  					this.dead = true;
+  				}
+  			},
+  			render: function () {
+  				context.beginPath();
+  				context.fillStyle = "rgba(0,0,0," + this.life + ")";
+  				context.arc(
+  	                this.position.x, this.position.y, 10,
+  	                0, Math.PI * 2
+  	            );
+  				context.fill();
+  			}
+  		};
+
+  		return Particle;
+  	})();
+
+
+  	canvas.width = 640;
+  	canvas.height = 360;
+
+  	var p = new Particle(canvas.width / 2, canvas.height / 2);
+
+  	var gravity = new Vector(0, 0.1);
+
+  	requestAnimationFrame(function raf() {
+  		context.fillStyle = (p.dead ? "red" : "white");
+  		context.fillRect(0, 0, canvas.width, canvas.height);
+
+		p.applyForce(gravity);
+  		p.update();
+  		p.render();
+
+  		requestAnimationFrame(raf);
+  	});
+		</script>
+	</body>
+</html>

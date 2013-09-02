@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<title>4: Particle Systems: 4.4 - Particle System Class</title>
+		<link href="../styles.css" rel="stylesheet" type="text/css" />
+	</head>
+	<body>
+		<canvas id="canvas"></canvas>
+		<script src="../lib.js" type="text/javascript"></script>
+		<script type="text/javascript">
+  	var canvas = document.getElementById("canvas");
+  	var context = canvas.getContext("2d");
+  	canvas.pageOffset = { x: canvas.offsetLeft + 2, y: canvas.offsetTop + 2 };
+
+  	var Particle = (function () {
+  		function Particle(position) {
+  			this.mass = 1;
+  			this.position = position || new Vector(0, 0);
+  			this.velocity = Vector.random["2D"]().mul(2);
+  			this.acceleration = new Vector(0, 0);
+  		}
+  		Particle.prototype = {
+  			mass: 1,
+  			position: null,
+  			velocity: null,
+  			acceleration: null,
+
+  			life: 1,
+
+  			applyForce: (function () {
+  				var massForce = new Vector();
+
+  				return function (force) {
+  					massForce.copy(force).div(this.mass);
+  					this.acceleration.add(massForce);
+
+  					return this;
+  				};
+  			})(),
+
+  			update: function () {
+  				// motion
+  				this.velocity.add(this.acceleration);
+  				this.position.add(this.velocity);
+
+  				// reset acceleration
+  				this.acceleration.mul(0);
+
+  				this.life -= 0.01;
+  				//console.log(this.life);
+  				if (this.life <= 0) {
+  					this.dead = true;
+  				}
+  			},
+  			render: function () {
+  				context.beginPath();
+  				context.fillStyle = "rgba(127,127,127," + this.life + ")";
+  				context.arc(
+  	                this.position.x, this.position.y, 10,
+  	                0, Math.PI * 2
+  	            );
+  				context.fill();
+  			}
+  		};
+
+  		Particle.System = (function () {
+  			function Particle_System(origin) {
+  				this.origin = origin || new Vector(0, 0);
+  				this.particles = [];
+  			}
+  			Particle_System.prototype = {
+  				particles: null, // []
+
+  				update: function () {
+  					this.particles.push(new Particle(this.origin.clone()));
+
+  					for (var i = 0, p, l = this.particles.length; i < l; i++) {
+  						p = this.particles[i];
+
+  						p.applyForce(gravity);
+  						p.update();
+
+  						if (p.dead) {
+  							this.particles.splice(i, 1);
+  							i--; l--;
+  						}
+  					}
+  				},
+  				render: function () {
+  					for (var i = 0, p, l = this.particles.length; i < l; i++) {
+  						this.particles[i].render();
+  					}
+  				}
+  			};
+
+  			return Particle_System;
+  		})();
+
+  		return Particle;
+  	})();
+
+
+  	canvas.width = 640;
+  	canvas.height = 360;
+
+  	var psystems = [];
+
+  	var gravity = new Vector(0, 0.1);
+
+  	on(window, "click", function (e) {
+  		psystems.push(new Particle.System(new Vector(e.pageX - canvas.pageOffset.x, e.pageY - canvas.pageOffset.y)));
+  	});
+
+  	requestAnimationFrame(function raf() {
+  		context.fillStyle = "white";
+  		context.fillRect(0, 0, canvas.width, canvas.height);
+
+  		for (var i = 0, ps, l = psystems.length; i < l; i++) {
+  			ps = psystems[i];
+  			ps.update();
+  			ps.render();
+  		}
+
+  		requestAnimationFrame(raf);
+  	});
+		</script>
+	</body>
+</html>
