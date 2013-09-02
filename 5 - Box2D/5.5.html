@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<title>5: Box2D: 5.5</title>
+		<link href="../styles.css" rel="stylesheet" type="text/css" />
+	</head>
+	<body>
+		<canvas id="canvas"></canvas>
+		<script src="Box2dWeb-2.1.a.3/Box2dWeb-2.1.a.3.js" type="text/javascript"></script>
+		<script src="../lib.js" type="text/javascript"></script>
+		<script type="text/javascript">
+  	var canvas = document.getElementById("canvas");
+  	var context = canvas.getContext("2d");
+  	canvas.pageOffset = { x: canvas.offsetLeft + 2, y: canvas.offsetTop + 2 };
+
+  	var pixels_world = 100, world_pixels = 1 / pixels_world;
+
+  	//var mouse = {
+  	//  x: 0, y: 0,
+  	//  down: false,
+  	//  update: function (e) {
+  	//      e.preventDefault();
+  	//      mouse.x = e.pageX - canvas.pageOffset.x;
+  	//      mouse.y = e.pageY - canvas.pageOffset.y;
+  	//      switch (e.type) {
+  	//          case "mousedown":
+  	//              mouse.down = true;
+  	//              break;
+  	//          case "mouseup":
+  	//              mouse.down = false;
+  	//              break;
+  	//      }
+  	//  }
+  	//};
+  	//on(window, "mousedown", mouse.update);
+  	//on(window, "mousemove", mouse.update);
+  	//on(window, "mouseup", mouse.update);
+
+  	on(window, "click", function (e) {
+  		bodies.push(
+  	        new Box(
+  	            e.pageX - canvas.pageOffset.x, e.pageY - canvas.pageOffset.y
+  	        )
+  	    );
+  	});
+
+  	var Box = (function () {
+  		function Box(x, y) {
+  			var width = this.width = 10 + (Math.random() * 10);
+  			var height = this.height = 10 + (Math.random() * 10);
+
+  			var bodyDef = this.body = new Box2D.Dynamics.b2BodyDef();
+  			bodyDef.type = Box2D.Dynamics.b2Body.b2_dynamicBody;
+  			bodyDef.position.Set(x, y);
+
+  			var fixDef = new Box2D.Dynamics.b2FixtureDef();
+  			fixDef.density = 1;
+  			fixDef.friction = 0.3;
+  			fixDef.restitution = 0.5;
+
+  			var shape = fixDef.shape = new Box2D.Collision.Shapes.b2PolygonShape();
+  			shape.SetAsBox(width / 2, height / 2);
+
+  			world.CreateBody(bodyDef).CreateFixture(fixDef);
+  		}
+  		Box.prototype = {
+  			width: 0, height: 0,
+
+  			body: null, // Box2D Body
+  			render: function () {
+  				//console.log(this.body.GetDefinition());
+  				var pos = this.body.position;
+  				var angle = this.body.angle;
+
+  				console.log("[ " + pos.x + ", " + pos.y + " ]", angle);
+
+  				context.save();
+  				context.beginPath();
+  				context.translate(pos.x, pos.y);
+  				context.rotate(angle);
+  				context.rect(-this.width / 2, -this.height / 2, this.width, this.height);
+  				context.fill();
+  				context.stroke();
+  				context.restore();
+  			}
+  		};
+
+  		return Box;
+  	})();
+
+
+  	canvas.width = 640;
+  	canvas.height = 360;
+
+  	context.fillStyle = "rgba(127,127,127,0.1)";
+
+  	context.lineWidth = 1;
+  	context.lineCap = "square";
+  	context.lineJoin = "miter";
+
+  	var bodies = [];
+
+  	var bVec2 = Box2D.Common.Math.b2Vec2;
+  	var world = new Box2D.Dynamics.b2World(new bVec2(0, 9.8), true);
+
+  	var prev = +new Date(), delta, next;
+  	requestAnimationFrame(function raf() {
+  		next = +new Date();
+  		delta = next - prev;
+  		prev = next;
+
+  		context.save();
+  		context.fillStyle = "white";
+  		context.fillRect(0, 0, canvas.width, canvas.height);
+  		context.restore();
+
+  		world.Step(delta, 10, 10);
+
+  		for (var i = 0, l = bodies.length; i < l; i++) {
+  			bodies[i].render();
+  		}
+
+  		requestAnimationFrame(raf);
+  	});
+		</script>
+	</body>
+</html>
